@@ -1,5 +1,5 @@
 # Test automation project for OmniUpdate
-This repository contains the test project for the QA Automation Engineer test.
+This repository contains a project for the QA Automation Engineer test.
 
 ## Requirements:
 * Windows 10
