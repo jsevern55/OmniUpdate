@@ -4,8 +4,7 @@ This repository contains a project for the QA Automation Engineer test.
 ## Requirements:
 * Windows 10
 * Chrome 67+
-* [Python 2.7.12](https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi)
-  * Install to `C:\` for the sake of simplicity
+* [Python 2.7.12](https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi) (Install to `C:\` for the sake of simplicity)
 * [Node.js](https://nodejs.org/en/download/current/)
 * [Chromdriver.exe](https://chromedriver.storage.googleapis.com/2.40/chromedriver_win32.zip) (copy to `C:\Python27\Scripts`)
 * [Git for Windows](https://git-scm.com/download/win)
