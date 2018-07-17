@@ -26,3 +26,4 @@ This repository contains a project for the QA Automation Engineer test.
   * Change directory to the local repository `cd OmniUpdate`
   * Execute the test case `robot -d logs -T tests\[name].robot`
   * Logs can be found in `C:\OmniUpdate\logs`
+    * log-[timestamp].html provides a detailed report of the executed test case. Screenshots (if any) will be rendered in the log.
