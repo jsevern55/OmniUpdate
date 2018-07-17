@@ -24,5 +24,5 @@ This repository contains a project for the QA Automation Engineer test.
   * Change directory to C:\ (`cd \`)
   * Run `git clone https://github.com/jsevern55/OmniUpdate.git`
   * Change directory to the local repository `cd OmniUpdate`
-  * Execute the test case `robot test_case\[name].robot`
+  * Execute the test case `robot -d logs -T tests\[name].robot`
   * Logs can be found in `C:\OmniUpdate\logs`
