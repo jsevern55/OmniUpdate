@@ -22,6 +22,7 @@ Ensure that the following directories are added to the System variable "Path" (i
   * `selenium`
   * `robotframework`
   * `robotframework-seleniumlibrary`
+  * `requests`
   * `robotframework-requests`
   
 #### Cloning this repository:
