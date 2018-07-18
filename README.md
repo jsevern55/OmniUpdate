@@ -2,7 +2,7 @@
 This repository contains a project for the QA Automation Engineer test.
 
 Please contact me if there are any questions:
-  Contact info: jsevern55@outlook.com
+Contact info: jsevern55@outlook.com
 
 ## Requirements:
 * Windows 10
