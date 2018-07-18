@@ -12,17 +12,17 @@ Please contact me if there are any questions - jsevern55@outlook.com
 * [Git for Windows](https://git-scm.com/download/win)
 
 ## Prerequisites & Setup:
-### Environment Variables: 
+#### Environment Variables: 
 Ensure that the following directories are added to the System variable "Path" (if they are not already added). **NOTE:** Modifying the system variables will require a computer restart.
   * C:\Python27
   * C:\Python27\Scripts
   * C:\Python27\site-packages
-### Install the following packages using `pip install [package]`:
+#### Install the following packages using `pip install [package]`:
   * `robot`
   * `selenium`
   * `robotframework`
   * `robotframework-seleniumlibrary`
-### Cloning this repository:
+#### Cloning this repository:
   * Open a new terminal
   * Change directory to C:\ (`cd \`)
   * Run `git clone https://github.com/jsevern55/OmniUpdate.git`
