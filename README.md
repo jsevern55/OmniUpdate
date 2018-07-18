@@ -22,6 +22,8 @@ Ensure that the following directories are added to the System variable "Path" (i
   * `selenium`
   * `robotframework`
   * `robotframework-seleniumlibrary`
+  * `robotframework-requests`
+  
 #### Cloning this repository:
   * Open a new terminal
   * Change directory to C:\ (`cd \`)
