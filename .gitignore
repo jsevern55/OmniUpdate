@@ -1,0 +1,8 @@
+logs/report*.html
+logs/output*.xml
+logs/log*.html
+tests/*.png
+*.png
+tests/report*.html
+tests/output*.xml
+tests/log*.html
