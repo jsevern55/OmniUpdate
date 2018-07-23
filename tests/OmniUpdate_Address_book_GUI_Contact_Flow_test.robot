@@ -11,14 +11,17 @@ ${API}                      http://front-end.oudemo.com/api
 ${SESSIOINNAME}             AddressBook
 
 *** Test Case ***
+#Creates a new contact using the Web Browser
 GUI Create New Entry
     [Tags]    Functionality
     Integration Test Create Contact Module
 
+#Updates a contact using the Web Browser
 GUI Update Entry
     [Tags]    Functionality
     Integration Test Update Contact Module
 
+#Deletes a contact using the Web Browser
 GUI Delete Entry
     [Tags]    Functionality
     API Create New Entry    ${SESSIOINNAME}    Bruce    Banner    incredible@hulk.com    1234567890    123 Green Way    Brooklyn    NY    11223

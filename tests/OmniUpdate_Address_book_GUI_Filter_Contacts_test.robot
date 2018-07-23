@@ -11,6 +11,7 @@ ${API}                      http://front-end.oudemo.com/api
 ${SESSIOINNAME}             AddressBook
 
 *** Test Case ***
+#Filters contacts using the Web Browser
 GUI Filter Contacts
     [Tags]    Functionality
     API Create New Entry    ${SESSIOINNAME}    Bruce    Banner    incredible@hulk.com    1234567890    123 Green Way    Brooklyn    NY    11223

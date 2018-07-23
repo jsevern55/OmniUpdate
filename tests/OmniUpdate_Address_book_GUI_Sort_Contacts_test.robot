@@ -11,13 +11,13 @@ ${API}                      http://front-end.oudemo.com/api
 ${SESSIOINNAME}             AddressBook
 
 *** Test Case ***
+#Sorts contacts using the Web Browser
 GUI Sort Contacts
     [Tags]    Functionality
     API Create New Entry    ${SESSIOINNAME}    Bruce    Banner    incredible@hulk.com    1234567890    123 Green Way    Brooklyn    NY    11223
     API Create New Entry    ${SESSIOINNAME}    Donald    Blake    thor@odinson.com    1234567890    123 Mjolnir Way    Brooklyn    NY    11223
     Reload Page
     Sleep    2
-    #Wait Until Element Is Visible    ${CONTACTITEM}/descendant::div[contains(@class, 'contact-name')]
     @{contactlistxpath}    Get WebElements    ${CONTACTITEM}/descendant::div[contains(@class, 'contact-name')]
     @{contacts}    Create List
     :FOR    ${contact}    IN    @{contactlistxpath}

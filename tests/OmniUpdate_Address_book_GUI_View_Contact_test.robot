@@ -11,6 +11,7 @@ ${API}                      http://front-end.oudemo.com/api
 ${SESSIOINNAME}             AddressBook
 
 *** Test Case ***
+#Views a contact using the Web Browser
 GUI View Single Contact
     [Tags]    Functionality
     API Create New Entry    ${SESSIOINNAME}    Bucky    Barnes    winter@soldier.com    1234567890    123 Buchanan Way    Brooklyn    NY    11223

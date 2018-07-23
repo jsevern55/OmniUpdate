@@ -37,7 +37,7 @@ Open Browser and Go to URL
     Maximize Browser Window
     Set Selenium Speed    0
 
-API List Default Contacts
+API List Contacts
     [Arguments]    ${session}
     ${resp}    Get Request    ${session}    /address/list    params=apikey=${APIKEY}
     Should Be True    '${resp.status_code}' == '200'
@@ -239,9 +239,6 @@ Email Field Validation for Creating a contact
     Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
     Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
     :FOR    ${options}    IN    @{possibilities}
-    \    #${return}    Get Regexp Matches    ${options}    ${pattern}
-    \    #${returnstring}=    Run Keyword If    ${return} is not None and ${return} != []    Set Variable   @{return}[0]
-    \    #Run Keyword If    ${returnstring} is not None    Append To List    ${matches}    ${options}
     \    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]    ${options}
     \    Sleep    500ms
     \    ${result}    ${r}    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${CREATEMODULE}${errormsg}    1
@@ -260,9 +257,6 @@ Phone Field Validation for Creating a contact
     Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
     Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
     :FOR    ${options}    IN    @{possibilities}
-    \    #${return}    Get Regexp Matches    ${options}    ${pattern}
-    \    #${returnstring}=    Run Keyword If    ${return} is not None and ${return} != []    Set Variable   @{return}[0]
-    \    #Run Keyword If    ${returnstring} is not None    Append To List    ${matches}    ${options}
     \    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    ${options}
     \    ${result}    ${r}    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${CREATEMODULE}${errormsg}    1
     \    Run Keyword If    '${result}' == 'FAIL'    Append To List    ${MATCHES}    ${options}
@@ -270,8 +264,6 @@ Phone Field Validation for Creating a contact
     Set Global Variable    @{MATCHES}
 
 Email Field Validation for Updating a contact
-    #Wait Until Element Is Visible    ${EDITCONTACT}    10
-    #Click Button    ${EDITCONTACT}
     Wait Until Element Is Visible    ${EDITMODULE}    10
     Log List    ${EMAILMATCHES}
     :FOR    ${ValidEmails}    IN    @{EMAILMATCHES}
@@ -290,8 +282,6 @@ Email Field Validation for Updating a contact
     Click Element    ${EDITCONTACT}
 
 Phone Field Validation for Updating a contact
-    #Wait Until Element Is Visible    ${EDITCONTACT}    10
-    #Click Button    ${EDITCONTACT}
     Wait Until Element Is Visible    ${EDITMODULE}    10
     Log List    ${MATCHES}
     :FOR    ${ValidNumbers}    IN    @{MATCHES}
