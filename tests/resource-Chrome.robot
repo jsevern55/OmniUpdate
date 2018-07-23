@@ -8,6 +8,8 @@ Library           Collections
 *** Variables ***
 ${BROWSER}                  Chrome
 &{ID}
+@{MATCHES}
+@{EMAILMATCHES}
 ${APIKEY}                   39c91efd-ba3f-42fe-a76a-642aafd32883
 ${NUMBEROFCONTACTS}         //div[contains(@class, 'contact-item')]
 ${NUMBEROFCONTACTSXPATH}    xpath=//div[contains(@class, 'contact-item')]
@@ -101,7 +103,9 @@ Integration Test Create Contact Module
     Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'lastName')]
     Wait Until Element Is Not Visible    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'firstName')]/following::div[contains(@class,'error-msg') and contains(@ng-show, 'firstName.$invalid')]
     Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'lastName')]    Barnes
-    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    1234567890
+    Phone Field Validation for Creating a contact
+    Email Field Validation for Creating a contact
+    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    0987654321
     Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]    winter@soldier.com
     Click Element    ${CREATEMODULE}/descendant::a[contains(@class, 'more-label')]
     Wait Until Element Is Visible    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'address')]
@@ -128,6 +132,9 @@ Integration Test Update Contact Module
     Wait Until Element Is Visible    ${EDITMODULE}/descendant::input[contains(@ng-model, 'firstName')]
     Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'firstName')]    Steven
     Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'lastName')]    Rogers
+    Run Keyword And Continue On Failure    Phone Field Validation for Updating a contact
+    Run Keyword And Continue On Failure    Email Field Validation for Updating a contact
+    Wait Until Element Is Visible    ${EDITMODULE}/descendant::input[contains(@ng-model, 'phone')]
     Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'phone')]    0987654321
     Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'email')]    captain@america.com
     Click Element    ${EDITMODULE}/descendant::a[contains(@class, 'more-label')]
@@ -165,8 +172,8 @@ Integration Test Delete Contact
     Click Button    ${DELETECONTACTFLOAT}
     Wait Until Element Is Visible    ${MODALCONFIRM}
     Click Element    ${MODALCONFIRM}
-    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${deleteables[1]}')]
-    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${deleteables[2]}')]
+    ${result1}    Run Keyword And Return Status    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${deleteables[1]}')]
+    ${result2}    Run Keyword And Return Status    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${deleteables[2]}')]
 
 View Single Contact
     [Arguments]    ${contact}
@@ -199,29 +206,53 @@ Sort Contacts
     Wait Until Element Is Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-item')]/descendant::div[contains(@class, 'contact-name') and contains(text(), '${sortables[1]}')]/following::div[contains(@class, 'contact-name') and contains(text(), '${sortables[0]}')]
 
 Filter Contacts
-    [Arguments]    ${data}
-    Log Dictionary    ${data}
+    [Arguments]    ${firstName}    ${lastName}    ${email}
     Wait Until Element Is Visible    ${SEARCHINPUT}
     Wait Until Element Is Visible    ${FILTERBUTTON}
     Wait Until Element Is Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name')]
-    @{contactlistxpath}    Get WebElements    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name')]
     Click Element    ${FILTERBUTTON}
-    #:FOR    ${contact}    IN    @{contactlistxpath}
-    #\    Search Strings    ${contact}    ${data}
+    Search Strings    ${firstName}
+    Search Strings    ${lastName}
+    Search Strings    ${email}
 
 Search Strings
-    [Arguments]    ${elements}    ${dict}
-    :FOR    ${items}    IN    @{dict.keys()}
-    \    Input Text   ${SEARCHINPUT}    &{dict}[${items}]
-    \    ${name}    Get Text    ${elements}
-    \    ${result}    ${r}    Run Keyword And Ignore Error    Should Contain    ${name}    &{dict}[${items}]
-    \    Run Keyword If    '${result}' == 'FAIL'    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${name}')]
-    \    Run Keyword If    '${result}' == 'PASS'    Wait Until Element Is Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${name}')]
+    [Arguments]    ${list}
+    :FOR    ${items}    IN    @{list}
+    \    Clear Element Text    ${SEARCHINPUT}
+    \    Input Text   ${SEARCHINPUT}    ${items}
+    \    Sleep    500ms
+    \    ${name}    Get Text    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name')]
+    \    ${email}    Get Text    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-email')]
+    \    ${result1}    ${r1}    Run Keyword And Ignore Error    Should Contain    ${name}    ${items}
+    \    ${result2}    ${r2}    Run Keyword If    '${result1}' == 'FAIL'    Run Keyword And Ignore Error    Should Contain    ${email}    ${items}
+    \    Run Keyword If    '${result1}' == 'FAIL' and '${result2}' == 'FAIL'    Wait Until Element Is Not Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${name}')]
+    \    Run Keyword If    '${result1}' == 'PASS' or '${result2}' == 'PASS'    Wait Until Element Is Visible    ${CONTACTLIST}/descendant::div[contains(@class, 'contact-name') and contains(text(), '${name}')]
 
+Email Field Validation for Creating a contact
+    @{possibilities}    Create List    test@test.com    a    1    .    t@t.com    t!@t.com    t1@t.com    !t@t.com    1t@t.com    t.t.t@t.t.t.com    te@t1.com    .te@t.com    te.@t.com    11@1.com    _t@t.com    t_@t.com    _t_t@t.com    t_t@t_t.com
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
+    ${errormsg}    Set Variable    /descendant::input[contains(@ng-model, 'email')]/following::div[contains(@class,'error-msg') and contains(@ng-show, 'email.$invalid')]
+    ${attribute}    Get Element Attribute    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]    ng-pattern
+    ${p}    Convert To String    ${attribute}
+    ${pattern}    Replace String    ${p}    /    ${EMPTY}
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
+    :FOR    ${options}    IN    @{possibilities}
+    \    #${return}    Get Regexp Matches    ${options}    ${pattern}
+    \    #${returnstring}=    Run Keyword If    ${return} is not None and ${return} != []    Set Variable   @{return}[0]
+    \    #Run Keyword If    ${returnstring} is not None    Append To List    ${matches}    ${options}
+    \    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]    ${options}
+    \    Sleep    500ms
+    \    ${result}    ${r}    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${CREATEMODULE}${errormsg}    1
+    \    Run Keyword If    '${result}' == 'FAIL'    Append To List    ${EMAILMATCHES}    ${options}
+    \    Clear Element Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
+    Set Global Variable    @{EMAILMATCHES}
 
-Test Phone Field
+Phone Field Validation for Creating a contact
     @{possibilities}    Create List    1234567890    .    -    +    1    12    123    1234    12345    12345    123456    1234567    12345678    123456789    123.456.7890    123-456-7890    123+456+7890    +1234567890    -1234567890    .1234567890    .1234567890.    .123456789+    .1234567890-    +1234567890+    +1234567890.    -1234567890.    +1234567890-    -1234567890+    -1234567890-
-    @{matches}    Create List
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
+    Click Element    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'email')]
     ${errormsg}    Set Variable    /descendant::input[contains(@ng-model, 'phone')]/following::div[contains(@class,'error-msg') and contains(@ng-show, 'phone.$invalid')]
     ${attribute}    Get Element Attribute    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    ng-pattern
     ${p}    Convert To String    ${attribute}
@@ -234,15 +265,36 @@ Test Phone Field
     \    #Run Keyword If    ${returnstring} is not None    Append To List    ${matches}    ${options}
     \    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    ${options}
     \    ${result}    ${r}    Run Keyword And Ignore Error    Wait Until Element Is Visible    ${CREATEMODULE}${errormsg}    1
-    \    Run Keyword If    '${result}' == 'FAIL'    Append To List    ${matches}    ${options}
+    \    Run Keyword If    '${result}' == 'FAIL'    Append To List    ${MATCHES}    ${options}
     \    Clear Element Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]
-    Input Text    ${CREATEMODULE}/descendant::input[contains(@ng-model, 'phone')]    @{possibilities}[0]
-    Click Button    ${CREATEMODULE}/descendant::button[contains(text(), 'SAVE')]
-    Wait Until Element Is Visible    ${EDITCONTACT}    10
-    Click Button    ${EDITCONTACT}
+    Set Global Variable    @{MATCHES}
+
+Email Field Validation for Updating a contact
+    #Wait Until Element Is Visible    ${EDITCONTACT}    10
+    #Click Button    ${EDITCONTACT}
     Wait Until Element Is Visible    ${EDITMODULE}    10
-    Log List    ${matches}
-    :FOR    ${ValidNumbers}    IN    @{matches}
+    Log List    ${EMAILMATCHES}
+    :FOR    ${ValidEmails}    IN    @{EMAILMATCHES}
+    \    Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'email')]    ${ValidEmails}
+    \    Wait Until Element Is Visible    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]    10
+    \    Click Button    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
+    \    Wait Until Element Is Visible    ${DISPLAYMODULE}
+    \    Wait Until Element Is Visible    ${DISPLAYMODULE}/descendant::i[contains(@class, 'mail')]/following::*[1]
+    \    ${DisplayedEmail}    Get Text    ${DISPLAYMODULE}/descendant::i[contains(@class, 'mail')]/following::*[1]
+    \    Run Keyword And Continue On Failure    Should Be True    '${ValidEmails}' == '${DisplayedEmail}'
+    \    Wait Until Element Is Visible    ${EDITCONTACT}    10
+    \    Click Button    ${EDITCONTACT}
+    Wait Until Element Is Visible    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
+    Click Button    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
+    Wait Until Element Is Not Visible    ${EDITMODULE}
+    Click Element    ${EDITCONTACT}
+
+Phone Field Validation for Updating a contact
+    #Wait Until Element Is Visible    ${EDITCONTACT}    10
+    #Click Button    ${EDITCONTACT}
+    Wait Until Element Is Visible    ${EDITMODULE}    10
+    Log List    ${MATCHES}
+    :FOR    ${ValidNumbers}    IN    @{MATCHES}
     \    Input Text    ${EDITMODULE}/descendant::input[contains(@ng-model, 'phone')]    ${ValidNumbers}
     \    Wait Until Element Is Visible    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]    10
     \    Click Button    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
@@ -254,6 +306,8 @@ Test Phone Field
     \    Click Button    ${EDITCONTACT}
     Wait Until Element Is Visible    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
     Click Button    ${EDITMODULE}/descendant::button[contains(text(), 'UPDATE')]
+    Run Keyword and Ignore Error    Wait Until Element Is Not Visible    ${EDITMODULE}
+    Click Element    ${EDITCONTACT}
 
 Prettify JSON
     [Arguments]    ${RawJSON}
