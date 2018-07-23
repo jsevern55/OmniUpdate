@@ -11,6 +11,8 @@ Please contact me if there are any questions - jsevern55@outlook.com
 * [Chromdriver.exe](https://chromedriver.storage.googleapis.com/2.40/chromedriver_win32.zip) (copy to `C:\Python27\Scripts`)
 * [Git for Windows](https://git-scm.com/download/win)
 
+(**NOTE**: Dependencies mentioned above can be found in the Dependencies directory)
+
 ## Prerequisites & Setup:
 #### Environment Variables: 
 Ensure that the following directories are added to the System variable "Path" (if they are not already added). **NOTE:** Modifying the system variables will require a computer restart.
